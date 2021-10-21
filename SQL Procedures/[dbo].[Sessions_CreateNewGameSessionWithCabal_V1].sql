@@ -4,15 +4,50 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE PROCEDURE [dbo].[Sessions_SelectGameBySessionIdAndCabalId_V1]
-			@SessionId int,
-			@CreatorCabalId int
+Create PROCEDURE [dbo].[Sessions_CreateNewGameSessionWithCabal_V1]
+			@SessionName nvarchar(128),
+			@Access bit,
+			@DefaultRules bit,
+			@CreatorId nvarchar(128),
+			@CabalName nvarchar(128),
+			@CreatorCabalId nvarchar(128)
 
 AS
 
 BEGIN TRY
 	BEGIN TRANSACTION
-		SELECT
+		DECLARE
+			@SessionId int
+
+			INSERT INTO dbo.Sessions
+			(
+				[Name],
+				[Access],
+				[DefaultRules],
+				[CreatorId]
+			)
+			VALUES
+			(
+				@SessionName,
+				@Access,
+				@DefaultRules,
+				@CreatorId
+			)
+
+			Set @SessionId = Scope_Identity()
+
+			INSERT INTO dbo.Sessions_Cabals
+			(
+				[SessionId],
+				[CabalId]
+			)
+			VALUES
+			(
+				@SessionId,
+				@CreatorCabalId
+			)
+
+		SELECT DISTINCT
 			s.[Id] as 'Session Id',
 			s.[Name] as 'Session Name',
 			s.[Access],

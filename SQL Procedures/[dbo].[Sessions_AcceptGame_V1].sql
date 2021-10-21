@@ -1,3 +1,9 @@
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
 CREATE PROCEDURE [dbo].[Sessions_AcceptGame_V1]
 			@SessionId int,
 			@CabalName nvarchar(128),
@@ -31,7 +37,7 @@ BEGIN TRY
 			SET AcceptorId = @AcceptorId
 			WHERE Id = @SessionId
 
-			SELECT 
+			SELECT
 				s.[Id] as 'Session Id',
 				s.[Name] as 'Session Name',
 				s.[Access],
@@ -41,7 +47,7 @@ BEGIN TRY
 				s.[DateCreated] as 'Session Created',
 				s.[DateModified] as 'Session Modified',
 				CreatorCabal = (
-					Select 
+					Select
 						c1.[Id],
 						c1.[Name],
 						c1.[DefaultRules],
@@ -56,7 +62,7 @@ BEGIN TRY
 					WITHOUT_ARRAY_WRAPPER
 				),
 				AcceptorCabal  = (
-					Select 
+					Select
 						c2.[Id],
 						c2.[Name],
 						c2.[DefaultRules],
@@ -79,14 +85,15 @@ BEGIN CATCH
     IF @@TRANCOUNT > 0
         ROLLBACK TRANSACTION
 
-    DECLARE @ErrorMessage NVARCHAR(4000);  
-    DECLARE @ErrorSeverity INT;  
-    DECLARE @ErrorState INT;  
+    DECLARE @ErrorMessage NVARCHAR(4000);
+    DECLARE @ErrorSeverity INT;
+    DECLARE @ErrorState INT;
 
-    SELECT   
-       @ErrorMessage = ERROR_MESSAGE(),  
-       @ErrorSeverity = ERROR_SEVERITY(),  
-       @ErrorState = ERROR_STATE();  
+    SELECT
+       @ErrorMessage = ERROR_MESSAGE(),
+       @ErrorSeverity = ERROR_SEVERITY(),
+       @ErrorState = ERROR_STATE();
 
-    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState); 
+    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
 END CATCH
+GO

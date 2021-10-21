@@ -1,3 +1,9 @@
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
 CREATE PROCEDURE [dbo].[Sessions_DeleteGame_V1]
 			@GameId int,
 			@CreatorCabalId int,
@@ -8,8 +14,8 @@ BEGIN TRY
 	BEGIN TRANSACTION
 		DELETE
 		FROM dbo.Sessions_Cabals
-		WHERE SessionId = @GameId	
-			
+		WHERE SessionId = @GameId
+
 		DELETE
 		FROM dbo.Sessions
 		WHERE Id = @GameId
@@ -27,14 +33,15 @@ BEGIN CATCH
     IF @@TRANCOUNT > 0
         ROLLBACK TRANSACTION
 
-    DECLARE @ErrorMessage NVARCHAR(4000);  
-    DECLARE @ErrorSeverity INT;  
-    DECLARE @ErrorState INT;  
+    DECLARE @ErrorMessage NVARCHAR(4000);
+    DECLARE @ErrorSeverity INT;
+    DECLARE @ErrorState INT;
 
-    SELECT   
-       @ErrorMessage = ERROR_MESSAGE(),  
-       @ErrorSeverity = ERROR_SEVERITY(),  
-       @ErrorState = ERROR_STATE();  
+    SELECT
+       @ErrorMessage = ERROR_MESSAGE(),
+       @ErrorSeverity = ERROR_SEVERITY(),
+       @ErrorState = ERROR_STATE();
 
-    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState); 
+    RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);
 END CATCH
+GO
